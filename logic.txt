@@ -1,0 +1,42 @@
+Symbols
+	@ = Suit
+	# = Rank
+
+Card Values (All others numeric)
+	King 	= K = 13
+	Queen  	= Q = 12
+	Jack 	= J = 11
+	Ace 	= A = 1
+	
+Suit Values
+	Spades 		= S 	= 4
+	Clubs 		= C 	= 3
+	Diamonds 	= D 	= 2
+	Hearts 		= H 	= 1
+	
+Hand-to-Sequence conversion
+	@# @# @# @# @#
+	Sort by #, then @
+	Reformat
+		{#, #, #, #, #, @, @, @, @}
+		#-value at n matches @-value at n+5
+
+Hand Values (suit and rank values sorted as per scoring criteria)
+	Royal Flush 		= {10,@}
+	Straight Flush		= {9,#,@}
+	Four-of-a-Kind 		= {8,#}
+	Full House 			= {7,#}
+	Flush 				= {6,#,#,#,#,#,@}
+	Straight 			= {5,#,@}
+	Three-of-a-Kind 	= {4,#}
+	Two pairs 			= {3,#,#,@}
+	Pair 				= {2,#,@}
+	High Card 			= {1,#,@}
+	
+Tuple Value Sums (Assign each card a value based on the size of their tuple, then sum)
+	No tuples = 1 + 1 + 1 + 1 +1 = 5
+	Pair 2 + 2 + 1 + 1 + 1 = 7
+	2 pairs = 2 + 2 + 2 + 2 + 1 = 9
+	Triple = 3 + 3 + 3 + 1 + 1 = 11
+	Full House = 3 + 3 + 3 + 2 + 2 = 13
+	FAK = 4 + 4 + 4 + 4 + 1 = 17
