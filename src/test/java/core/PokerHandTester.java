@@ -167,7 +167,7 @@ public class PokerHandTester extends TestCase{
 	public void testFullHouse() {
 		Evaluator eva = new Evaluator();
 		int[] input = {5,5,5,4,4,3,4,1,2,1};
-		int[] val = {7,4}; //Full House, 5
+		int[] val = {7,5}; //Full House, 5
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
 	/*SCORE-5: Analyze Flush
@@ -178,7 +178,7 @@ public class PokerHandTester extends TestCase{
 	public void testFlush() {
 		Evaluator eva = new Evaluator();
 		int[] input = {11,9,8,4,2,4,4,4,4,4};
-		int[] val = {6,11,9,8,5,2,4}; //Flush, 11 9 8 4 2, Spades
+		int[] val = {6,11,9,8,4,2,4}; //Flush, 11 9 8 4 2, Spades
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
 	/*SCORE-6: Analyze Flush

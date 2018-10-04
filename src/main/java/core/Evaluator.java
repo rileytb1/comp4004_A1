@@ -7,14 +7,19 @@ public class Evaluator {
 	public boolean play(String cards) {
 		//Find dividing line between first five cards and remainder
 		int s = 0;
-		for (int x = 0; x <cards.length(); x++) {
+		int i = 0;
+		for (int x = 0; x < cards.length(); x++) {
 			if (cards.charAt(x) == ' ') s++;
-			if (s == 5) break;
+			if (s == 5) {
+				i = x; 
+				break;
+			}
 		}
 		//Dealer gets first five cards
-		String dealerCards = cards.substring(0,s);
+		String dealerCards = cards.substring(0,i);
 		//AIH gets remainder: hand (first 5 cards) and deck
-		String aihCards = cards.substring(s,cards.length() + 1);
+		String aihCards = cards.substring(i + 1,cards.length());
+		System.out.println(aihCards);
 		
 		int[] dHand = analyze((sort(convert(dealerCards))));
 		int[] aHand = analyze(strategize(aihCards));
@@ -66,8 +71,15 @@ public class Evaluator {
 		}
 		if (tvs > 11) return iHand;
 		
-		//STRATEGY-3: If difference between highest and lowest card is 4, return hand as-is
-		if (iHand[0] - iHand[4] == 4) return iHand;
+		//STRATEGY-3: If hand is straight, return as-is
+		Boolean seq5 = true;
+		for (int x = 1; x < 5; x++) {
+			if (iHand[0]-iHand[x] != x) {
+				seq5 = false;
+				break;
+			}
+		}
+		if (seq5 == true) return iHand;
 		
 		//STRATEGY-4: If four cards share same suit, swap misfit card and return hand
 		int[] suitSizes = {0,0,0,0};
@@ -233,8 +245,141 @@ public class Evaluator {
         }
         return cards;
 	}
+	
 	//Determine value of hand based on card values
 	public int[] analyze(int[] cards) {
+
+		//Check if hand is flush-variant
+		Boolean oneSuit = true;
+		for (int x = 5; x < cards.length - 1; x++) {
+			if (cards[x] != cards[x+1]) {
+				oneSuit = false;
+				break;
+			}
+		}
+		if (oneSuit == true) {
+			//SCORE-1: Evaluate Royal Flush
+			if ((cards[0] == 13) && (cards[3] == 10) && (cards[4] == 1)){
+				int[] score = {10,0};
+				score[1] = cards[5];
+				return score;
+			}
+			//SCORE-2: Evaluate Straight Flush
+			Boolean seq5 = true;
+			for (int x = 1; x < 5; x++) {
+				if (cards[0]-cards[x] != x) {
+					seq5 = false;
+					break;
+				}
+			}
+			if (seq5 == true) {
+				int[] score = {9,0,0};
+				score[1] = cards[0];
+				score[2] = cards[5];
+				return score;
+			}
+			//SCORE-5: Evaluate Flush
+			int[] score = {6,0,0,0,0,0,0};
+			for (int x = 1; x < 7; x++) {
+				score[x] = cards[x-1];
+			}
+			return score;
+		}
+		//Find tuple-value-sum
+		int tvs = 0;
+		int[] tuples = {0,0,0,0,0};
+		for (int x = 0; x < 5; x++) {
+			for (int y = 0; y <5; y++) {
+				if (cards[x] == cards[y]) tuples[x]++;	
+			}
+			tvs += tuples[x];
+		}
+		//Smooth tuple table for most valuable data only
+		for (int x = 4; x > 0; x--) {
+			if ((tuples[x-1] == tuples[x]) &&
+					(cards[x-1] == cards[x])) {
+				tuples[x] = 0;
+			}
+		}
 		
+		//SCORE-3: Evaluate Four-of-a-Kind
+		if (tvs == 17) {
+			int[] score = {8,0};
+			for(int x = 0; x < 5; x++) {
+				if (tuples[x] == 4) {
+					score[1] = cards[x];
+					return score;
+				}
+			}
+		}
+		//SCORE-4: Evaluate Full House
+		else if (tvs == 13) {
+			int[] score = {7,0};
+			for(int x = 0; x < 5; x++) {
+				if (tuples[x] == 3) {
+					score[1] = cards[x];
+					return score;
+				}
+			}
+		}
+		//SCORE-7: Evaluate Three-of-a-Kind
+		else if (tvs == 11) {
+			int[] score = {4,0};
+			for(int x = 0; x < 5; x++) {
+				if (tuples[x] == 3) {
+					score[1] = cards[x];
+					return score;
+				}
+			}
+		}
+		//SCORE-8: Evaluate Two Pairs
+		else if (tvs == 9) {
+			int count = 0;
+			int[] score = {3,0,0,0};
+			for(int x = 0; x < 5; x++) {
+				if (tuples[x] == 2) {
+					if (count == 0) {
+						score[1] = cards[x];
+						score[3] = cards[x+5];
+						count++;
+						continue;
+					}
+					if (count == 1) {
+						score[2] = cards[x];
+						return score;
+					}
+				}
+			}
+		}
+		//SCORE-9: Evaluate Pair
+		else if (tvs == 7) {
+			int[] score = {2,0,0};
+			for(int x = 0; x < 5; x++) {
+				if (tuples[x] == 2) {
+					score[1] = cards[x];
+					score[2] = cards[x+5];
+					return score;
+				}
+			}
+		}
+		//No Tuples
+		//SCORE-6 Evaluate Straight
+		Boolean seq5 = true;
+		for (int x = 1; x < 5; x++) {
+			if (cards[0]-cards[x] != x) {
+				seq5 = false;
+				break;
+			}
+		}
+		int[] score = {0,0,0};
+		
+		if (seq5 == true) score[0] = 5;
+		
+		//SCORE-10: Evaluate High Card
+		else score[0] = 1;
+		
+		score[1] = cards[0];
+		score[2] = cards[5];
+		return score;
 	}
 }
