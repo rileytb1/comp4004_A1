@@ -17,12 +17,11 @@ public class Evaluator {
 		}
 		//Dealer gets first five cards
 		String dealerCards = cards.substring(0,i);
-		//AIH gets remainder: hand (first 5 cards) and deck
-		String aihCards = cards.substring(i + 1,cards.length());
-		System.out.println(aihCards);
+		//AIP gets remainder: hand (first 5 cards) and deck
+		String aipCards = cards.substring(i + 1,cards.length());
 		
 		int[] dHand = analyze((sort(convert(dealerCards))));
-		int[] aHand = analyze(strategize(aihCards));
+		int[] aHand = analyze(strategize(aipCards));
 		
 		for (int x = 0; x < dHand.length; x++) {
 			if (aHand[x] > dHand[x]) return true;
@@ -31,17 +30,17 @@ public class Evaluator {
 		return false;
 	}
 	
-	//Determine if swaps need to be made, then return AIH hand as 10-digit array
+	//Determine if swaps need to be made, then return AIP hand as 10-digit array
 		//In descending order of rank, then suit, with ranks listed first
 	public int[] strategize(String cards) {
-		//Split AIH hand from deck
+		//Split AIP hand from deck
 		String[] cardArr= cards.split(" ");
-		String aih = String.join(" ",Arrays.copyOfRange(cardArr,0,5));
+		String aip = String.join(" ",Arrays.copyOfRange(cardArr,0,5));
 		String dk;
 		if (cardArr.length > 5) dk = String.join(" ", Arrays.copyOfRange(cardArr, 5, cardArr.length));
 		else dk = "";
 		
-		int[] iHand = convert(aih);
+		int[] iHand = convert(aip);
 		int[] deck;
 		if (dk.length() >1) deck = convert(dk);
 		else deck = new int[0];
@@ -96,7 +95,7 @@ public class Evaluator {
 				for (int y = 5; y < iHand.length; y++) {
 					//Swap card
 					if (iHand[y] != x+1) {
-						//Swap rank
+						printDiscard(iHand[y-5], iHand[y]);
 						iHand[y -5] = deck[0];
 						iHand[y] = deck[deck.length/2];
 						break;
@@ -120,21 +119,34 @@ public class Evaluator {
 				}
 			}
 			//Swap card
+			printDiscard(iHand[i], iHand[i+5]);
 			iHand[i] = deck[0];
 			iHand[i + 5] = deck[0 + (deck.length/2)];
 			return sort(iHand);
 		}
 		
 		//STRATEGY-6: If 1 card missing to form straight, swap misfit an return hand
-		if (iHand[0] - iHand[3] < 5) {
-			iHand[4] = deck[0];
-			iHand[9] = deck[deck.length/2];
-			return sort(iHand);
-		}
-		else if (iHand[1] - iHand[4] < 5) {
-			iHand[0] = deck[0];
-			iHand[5] = deck[deck.length/2];
-			return sort(iHand);
+		for (int x = 0; x < 2; x++) {
+			Boolean[] seq = {false, false, false, false, false};
+			seq[x] = true;
+			int s = 1;
+			for (int y = x + 1; y < x + 4; y++) {
+				if (iHand[y] == iHand[x] - (y-x)) {
+					seq[y] = true;
+					s++;
+				}
+				else break;
+			}
+			if (s == 4) {
+				for (int z = 0; z < 5; z++) {
+					if (seq[z] == false) {
+						printDiscard(iHand[z],iHand[z+5]);
+						iHand[z] = deck[0];
+						iHand[z + 5] = deck[deck.length/2];
+						return sort(iHand);
+					}
+				}
+			}
 		}
 		
 		//STRATEGY-7: If 3 cards in same suit, swap non-matching cards;
@@ -144,6 +156,7 @@ public class Evaluator {
 				int rep = 0;
 				for (int y = 5; y < iHand.length; y++) {
 					if (iHand[y] != x + 1) {
+						printDiscard(iHand[y-5],iHand[y]);
 						iHand[y - 5] = deck[rep];
 						iHand[y] = deck[rep + (deck.length/2)];
 						rep++;
@@ -160,6 +173,7 @@ public class Evaluator {
 				int rep = 0;
 				for(int y = 0; y < 5; y++) {
 					if ((y < x) || (y > x + 2)) {
+						printDiscard(iHand[y], iHand[y+5]);
 						iHand[y] = deck[rep];
 						iHand[y + 5] = deck[rep + (deck.length/2)];
 						rep++;
@@ -173,6 +187,7 @@ public class Evaluator {
 		int rep = 0;
 		for (int x = 4; x >= 0; x--) {
 			if (tuples[x] == 1) {
+				printDiscard(iHand[x],iHand[x+5]);
 				iHand[x] = deck[rep];
 				iHand[x + 5] = deck[rep+ (deck.length/2)];
 				rep++;
@@ -381,5 +396,24 @@ public class Evaluator {
 		score[1] = cards[0];
 		score[2] = cards[5];
 		return score;
+	}
+	
+	private void printDiscard(int rank, int suit) {
+		String r;
+		String s;
+		switch (rank) {
+			case 1: r = "A"; break;
+			case 11: r = "J"; break;
+			case 12: r = "Q"; break;
+			case 13: r = "K"; break;
+			default: r = Integer.toString(rank); break;
+		}
+		switch (suit) {
+			case 1: s = "H"; break;
+			case 2: s = "D"; break;
+			case 3: s = "C"; break;
+			default: s = "S"; break;
+		}
+		System.out.println("DISCARDING: " + s + r);
 	}
 }

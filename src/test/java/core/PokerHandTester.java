@@ -13,7 +13,7 @@ public class PokerHandTester extends TestCase{
 
 	/*STRATEGY-1: Strategize using Single-Suit Hand
 		Input (Shuffled):
-			AIH Hand: {D6, D7, D8, D9, D10}
+			AIP Hand: {D6, D7, D8, D9, D10}
 		Action: No swap
 		Expected Output: 10-digit array in descending order of rank
 	 */
@@ -25,7 +25,7 @@ public class PokerHandTester extends TestCase{
 	
 	/*STRATEGY-2: Strategize using hand with Tuple-Value-Sum > 11 (see Logic.txt)
 		Input (Shuffled):
-			AIH Hand: {S7,C7,H7,S3,D3}
+			AIP Hand: {S7,C7,H7,S3,D3}
 		Action: No swap
 		Expected Output: 10-digit array in descending order of rank, then suit
 	 */
@@ -37,7 +37,7 @@ public class PokerHandTester extends TestCase{
 	
 	/*STRATEGY-3: Strategize using Straight
 		Input (Shuffled):
-			AIH Hand: {H6, H5, C4, D3, S2}
+			AIP Hand: {H6, H5, C4, D3, S2}
 		Expected Output: 10-digit array in descending order of rank, then suit
 	 */
 	public void testSeq5NotFlush() {
@@ -48,9 +48,9 @@ public class PokerHandTester extends TestCase{
 	
 	/*STRATEGY-4: Strategize using hand with 4 cards of same suit
 		Input (Shuffled):
-			AIH Hand: {C8, C6, S5, C4, C2}
+			AIP Hand: {C8, C6, S5, C4, C2}
 			Deck: {C7}
-		Action: Swap non-matching card (S8) for C7
+		Action: Swap non-matching card (S5) for C7
 		Expected Output: 10-digit array in descending order of rank
 	 */
 	public void test4InSuit() {
@@ -61,7 +61,7 @@ public class PokerHandTester extends TestCase{
 
 	/*STRATEGY-5: Strategize using near-Full House (7 < Tuple Sum Value < 13)
 		Input (Shuffled):
-			AIH Hand: {S9, S7, C7, H7, H8}
+			AIP Hand: {S9, S7, C7, H7, H8}
 			Deck: {SQ}
 		Action: Swap lowest ranked card with tuple value of 1 (H8) for SQ
 		Expected Output: 10-digit array in descending order of rank, then suit
@@ -74,7 +74,7 @@ public class PokerHandTester extends TestCase{
 	
 	/*STRATEGY-6: Strategize with near-Straight (four values match ascending sequence)
 		Input (Shuffled):
-			AIH Hand: {DQ, HJ, H10, C9, S6}
+			AIP Hand: {DQ, HJ, H10, C9, S6}
 			Deck: {CK}
 		Action: Swap non-sequential card (S6) for CK
 		Expected Output: 10-digit array in descending order of rank, then suit
@@ -87,7 +87,7 @@ public class PokerHandTester extends TestCase{
 	
 	/*STRATEGY-7: Strategize using hand with 3 cards of same suit
 		Input (Shuffled):
-			AIH Hand: {DK, DQ, DJ, C7, H3}
+			AIP Hand: {DK, DQ, DJ, C7, H3}
 			Deck: {D7, D4}
 		Action: Swap two non-matching cards (C7, H3) for (D7, D4)
 		Expected Output: 10-digit array in descending order of rank, then suit
@@ -100,7 +100,7 @@ public class PokerHandTester extends TestCase{
 	
 	/*STRATEGY-8: Strategize using hand with 3-card sequence
 		Input (Shuffled):
-			AIH Hand: {SJ, C9, C10, S6, HA}
+			AIP Hand: {SJ, C9, C10, S6, HA}
 			Deck: {HK, DQ}
 		Action: Swap non-sequential cards (S6, HA) with (HK, DQ)
 		Expected Output: 10-digit array in descending order of rank, then suit
@@ -112,7 +112,7 @@ public class PokerHandTester extends TestCase{
 	}
 	/*STRATEGY-9: Strategize using bad hand (Pair or worse)
 		Input (Shuffled):
-			AIH Hand: {D2, H2, CQ, CJ, H6}
+			AIP Hand: {D2, H2, CQ, CJ, H6}
 			Deck: {S5, D5, H5}
 		Action: Swap 3 lowest cards with tuple value 1 (CQ,CJ, H6) for S5, D5, H5
 		Expected Output: 10-digit array in descending order of rank, then suit
@@ -237,23 +237,23 @@ public class PokerHandTester extends TestCase{
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
 	
-	/*SCORE-10: Take 2 hands, perform AIH swap for 2 different hands type, recognize AIH Win
+	/*SCORE-10: Take 2 hands, perform AIP swap for 2 different hands type, recognize AIP Win
 		Input (Shuffled):
 			Dealer Hand: {S4, C4, C3, DQ, S6} 	Pair of 4s
-			AIH Hand: {SA, HA, CA, HK, H8}
-				Deck: {DK}					After swap, AIH has Full House, Ace of Spades
-		Expected Output: AIH Win
+			AIP Hand: {SA, HA, CA, HK, H8}
+				Deck: {DK}					After swap, AIP has Full House, Ace of Spades
+		Expected Output: AIP Win
 	*/
 	public void testWin() {
 		Evaluator eva = new Evaluator();
 		assertEquals(true, eva.play("C4 S6 C3 S4 DQ HA SA H8 HK CA DK"));
 	}
-	/*SCORE-11: Take 2 hands, perform AIH swap for 2 of same hand, recognize AIH Loss
+	/*SCORE-11: Take 2 hands, perform AIP swap for 2 of same hand, recognize AIP Loss
 		Input (Shuffled):
 			Dealer Hand: {DK, DQ, DJ, D10, D9} 	Straight Flush, King of Diamonds
-			AIH Hand: {H6, H4, H3, H2, C7}
-				Deck: {H5}					After swap, AIH has Straight Flush, 6 of Hearts
-		Expected Output: AIH Loss
+			AIP Hand: {H6, H4, H3, H2, C7}
+				Deck: {H5}					After swap, AIP has Straight Flush, 6 of Hearts
+		Expected Output: AIP Loss
 	*/
 	public void testLoss() {
 		Evaluator eva = new Evaluator();
