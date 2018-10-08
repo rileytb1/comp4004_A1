@@ -29,9 +29,11 @@ Hand Values (suit and rank values sorted as per scoring criteria)
 	Flush 				= {6,#,#,#,#,#,@}
 	Straight 			= {5,#,@}
 	Three-of-a-Kind 	= {4,#}
-	Two pairs 			= {3,#,#,@}
+	Two pairs 			= {3,#,@}
 	Pair 				= {2,#,@}
 	High Card 			= {1,#,@}
+	
+	Note: #s appear in descending order, @ is highest suit of highest #
 	
 Tuple Value Sums (Assign each card a value based on the size of their tuple, then sum)
 	No tuples = 1 + 1 + 1 + 1 +1 = 5

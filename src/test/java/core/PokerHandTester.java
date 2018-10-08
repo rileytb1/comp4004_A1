@@ -181,7 +181,7 @@ public class PokerHandTester extends TestCase{
 		int[] val = {6,11,9,8,4,2,4}; //Flush, 11 9 8 4 2, Spades
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
-	/*SCORE-6: Analyze Flush
+	/*SCORE-6: Analyze Straight
 		Input (as 10-digit array):
 			Hand: {C9,D8,S7,D6,H5}
 		Expected Output: 3-digit array indicating hand value
@@ -192,7 +192,7 @@ public class PokerHandTester extends TestCase{
 		int[] val = {5,9,3}; //Straight, 9 of Clubs
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
-	/*SCORE-7: Analyze Three of a Kind
+	/*SCORE-8: Analyze Three of a Kind
 		Input (as 10-digit array):
 			Hand: {CK,S7,C7,D7,D3}
 		Expected Output: 2-digit array indicating hand value
@@ -203,7 +203,7 @@ public class PokerHandTester extends TestCase{
 		int[] val = {4,7}; //Three of a Kind, 7
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
-	/*SCORE-8: Analyze Two Pairs
+	/*SCORE-9: Analyze Two Pairs
 		Input (as 10-digit array):
 			Hand: {CQ,S4,C4,C3,D3}
 		Expected Output: 4-digit array indicating hand value
@@ -214,7 +214,7 @@ public class PokerHandTester extends TestCase{
 		int[] val = {3,4,4}; //Two pairs, 4, Spades
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
-	/*SCORE-9: Analyze Pair
+	/*SCORE-10: Analyze Pair
 		Input (as 10-digit array):
 			Hand: {C8,H7,S4,DA,HA}
 		Expected Output: 3-digit array indicating hand value
