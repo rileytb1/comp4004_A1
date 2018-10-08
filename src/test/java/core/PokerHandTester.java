@@ -211,7 +211,7 @@ public class PokerHandTester extends TestCase{
 	public void testTwoPairs() {
 		Evaluator eva = new Evaluator();
 		int[] input = {12,4,4,3,3,3,4,3,3,2};
-		int[] val = {3,4,3,4}; //Two pairs, 4 3, Spades
+		int[] val = {3,4,4}; //Two pairs, 4, Spades
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
 	/*SCORE-9: Analyze Pair
@@ -237,7 +237,7 @@ public class PokerHandTester extends TestCase{
 		Assert.assertArrayEquals(val, eva.analyze(input));
 	}
 	
-	/*SCORE-10: Take 2 hands, perform AIP swap for 2 different hands type, recognize AIP Win
+	/*SCORE-10: Take 2 hands, perform AIP swap for 2 different hand types, recognize AIP Win
 		Input (Shuffled):
 			Dealer Hand: {S4, C4, C3, DQ, S6} 	Pair of 4s
 			AIP Hand: {SA, HA, CA, HK, H8}

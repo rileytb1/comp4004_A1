@@ -1,8 +1,41 @@
 package core;
 
 import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class Evaluator {
+	 public static void main(String[] args) {
+		 Scanner r = new Scanner(System.in);
+		 Evaluator eva = new Evaluator();
+		 System.out.println("Current working directory: " + System.getProperty("user.dir"));
+		 System.out.println("Please enter the path of the file you wish to play:");
+		 String fn = r.next();
+		 eva.readFile(fn);
+		 r.close();
+	 }
+	
+	public void readFile(String filepath) {
+		System.out.println("Reading file...\n");
+		try (BufferedReader read = new BufferedReader(new FileReader(filepath))) {
+			String l;
+			int c = 1;
+			while ((l = read.readLine()) != null) {
+				System.out.println("ACCEPTANCE TEST " + Integer.toString(c));
+				System.out.println("CARDS: " + l);
+				if (play(l) == true) {
+					System.out.println("AIP Wins!\n");
+				}
+				else System.out.println("Dealer Wins!\n");
+				c++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Done reading, Goodbye!");
+	}
 	//Takes string of 10+ card values and determines winner between first 5 and remainder
 	public boolean play(String cards) {
 		//Find dividing line between first five cards and remainder
@@ -17,6 +50,7 @@ public class Evaluator {
 		}
 		//Dealer gets first five cards
 		String dealerCards = cards.substring(0,i);
+		System.out.println("Dealer's Hand: " + dealerCards);
 		//AIP gets remainder: hand (first 5 cards) and deck
 		String aipCards = cards.substring(i + 1,cards.length());
 		
@@ -36,6 +70,7 @@ public class Evaluator {
 		//Split AIP hand from deck
 		String[] cardArr= cards.split(" ");
 		String aip = String.join(" ",Arrays.copyOfRange(cardArr,0,5));
+		System.out.println("AIP's Hand: " + aip);
 		String dk;
 		if (cardArr.length > 5) dk = String.join(" ", Arrays.copyOfRange(cardArr, 5, cardArr.length));
 		else dk = "";
@@ -98,6 +133,7 @@ public class Evaluator {
 						printDiscard(iHand[y-5], iHand[y]);
 						iHand[y -5] = deck[0];
 						iHand[y] = deck[deck.length/2];
+						printAdd(iHand[y-5], iHand[y]);
 						break;
 					}
 				}
@@ -122,6 +158,7 @@ public class Evaluator {
 			printDiscard(iHand[i], iHand[i+5]);
 			iHand[i] = deck[0];
 			iHand[i + 5] = deck[0 + (deck.length/2)];
+			printAdd(iHand[i], iHand[i+5]);
 			return sort(iHand);
 		}
 		
@@ -143,6 +180,7 @@ public class Evaluator {
 						printDiscard(iHand[z],iHand[z+5]);
 						iHand[z] = deck[0];
 						iHand[z + 5] = deck[deck.length/2];
+						printAdd(iHand[z],iHand[z+5]);
 						return sort(iHand);
 					}
 				}
@@ -159,6 +197,7 @@ public class Evaluator {
 						printDiscard(iHand[y-5],iHand[y]);
 						iHand[y - 5] = deck[rep];
 						iHand[y] = deck[rep + (deck.length/2)];
+						printAdd(iHand[y-5],iHand[y]);
 						rep++;
 						if (rep > 1) break;
 					}
@@ -176,6 +215,7 @@ public class Evaluator {
 						printDiscard(iHand[y], iHand[y+5]);
 						iHand[y] = deck[rep];
 						iHand[y + 5] = deck[rep + (deck.length/2)];
+						printAdd(iHand[y], iHand[y+5]);
 						rep++;
 						if (rep > 1) break;
 					}
@@ -190,6 +230,7 @@ public class Evaluator {
 				printDiscard(iHand[x],iHand[x+5]);
 				iHand[x] = deck[rep];
 				iHand[x + 5] = deck[rep+ (deck.length/2)];
+				printAdd(iHand[x],iHand[x+5]);
 				rep++;
 				if (rep > 2) break;
 			}
@@ -349,20 +390,12 @@ public class Evaluator {
 		}
 		//SCORE-8: Evaluate Two Pairs
 		else if (tvs == 9) {
-			int count = 0;
-			int[] score = {3,0,0,0};
+			int[] score = {3,0,0};
 			for(int x = 0; x < 5; x++) {
 				if (tuples[x] == 2) {
-					if (count == 0) {
-						score[1] = cards[x];
-						score[3] = cards[x+5];
-						count++;
-						continue;
-					}
-					if (count == 1) {
-						score[2] = cards[x];
-						return score;
-					}
+					score[1] = cards[x];
+					score[2] = cards[x+5];
+					return score;
 				}
 			}
 		}
@@ -415,5 +448,23 @@ public class Evaluator {
 			default: s = "S"; break;
 		}
 		System.out.println("DISCARDING: " + s + r);
+	}
+	private void printAdd(int rank, int suit) {
+		String r;
+		String s;
+		switch (rank) {
+			case 1: r = "A"; break;
+			case 11: r = "J"; break;
+			case 12: r = "Q"; break;
+			case 13: r = "K"; break;
+			default: r = Integer.toString(rank); break;
+		}
+		switch (suit) {
+			case 1: s = "H"; break;
+			case 2: s = "D"; break;
+			case 3: s = "C"; break;
+			default: s = "S"; break;
+		}
+		System.out.println("ADDING: " + s + r);
 	}
 }
